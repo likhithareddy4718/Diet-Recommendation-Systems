@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Diet Recommendation</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+min-height:100vh;
+background:linear-gradient(-45deg,#0f172a,#1e293b,#065f46,#10b981);
+background-size:400% 400%;
+animation:bg 12s ease infinite;
+padding:20px;
+}
+
+@keyframes bg{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.card{
+width:100%;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:25px;
+}
+
+.left{
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(15px);
+padding:50px;
+border-radius:25px;
+color:white;
+display:flex;
+flex-direction:column;
+justify-content:center;
+}
+
+.left h1{
+font-size:55px;
+line-height:1.2;
+margin-bottom:20px;
+}
+
+.left p{
+line-height:1.8;
+opacity:0.9;
+}
+
+.stats{
+margin-top:30px;
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.stat{
+background:rgba(255,255,255,0.12);
+padding:12px 18px;
+border-radius:30px;
+}
+
+.right{
+background:white;
+padding:40px;
+border-radius:25px;
+box-shadow:0 15px 40px rgba(0,0,0,0.25);
+}
+
+.form-title{
+font-size:32px;
+font-weight:700;
+color:#0f172a;
+margin-bottom:10px;
+}
+
+.form-sub{
+color:#64748b;
+margin-bottom:25px;
+}
+
+label{
+display:block;
+margin-top:15px;
+margin-bottom:8px;
+font-weight:600;
+color:#334155;
+}
+
+input,
+select{
+width:100%;
+padding:15px;
+border:2px solid #e2e8f0;
+border-radius:12px;
+font-size:16px;
+}
+
+input:focus,
+select:focus{
+outline:none;
+border-color:#10b981;
+}
+
+.btn{
+width:100%;
+margin-top:25px;
+padding:15px;
+border:none;
+border-radius:12px;
+background:linear-gradient(135deg,#10b981,#22c55e);
+color:white;
+font-size:18px;
+font-weight:600;
+cursor:pointer;
+}
+
+.btn:hover{
+transform:translateY(-2px);
+}
+
+.result{
+animation:fadeIn 0.8s ease;
+}
+
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(30px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.result-header{
+text-align:center;
+}
+
+.result-header h1{
+font-size:45px;
+}
+
+.diet-box{
+margin-top:20px;
+background:#ecfdf5;
+padding:20px;
+border-radius:15px;
+text-align:center;
+font-size:28px;
+font-weight:700;
+color:#065f46;
+}
+
+.info-card{
+margin-top:20px;
+background:#f8fafc;
+padding:20px;
+border-radius:15px;
+}
+
+.info-card h3{
+margin-bottom:10px;
+}
+
+.food-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-top:20px;
+}
+
+.good{
+background:#ecfdf5;
+padding:20px;
+border-radius:15px;
+}
+
+.bad{
+background:#fef2f2;
+padding:20px;
+border-radius:15px;
+}
+
+ul{
+padding-left:20px;
+margin-top:10px;
+}
+
+li{
+margin:8px 0;
+}
+
+.extra{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-top:15px;
+}
+
+.extra-box{
+background:#f8fafc;
+padding:20px;
+border-radius:15px;
+}
+
+.new-btn{
+width:100%;
+margin-top:20px;
+padding:15px;
+border:none;
+border-radius:12px;
+background:#0f172a;
+color:white;
+font-size:17px;
+cursor:pointer;
+}
+
+.footer{
+margin-top:20px;
+text-align:center;
+color:#94a3b8;
+font-size:13px;
+}
+
+@media(max-width:900px){
+
+.card{
+grid-template-columns:1fr;
+}
+
+.left h1{
+font-size:38px;
+}
+
+.food-grid,
+.extra{
+grid-template-columns:1fr;
+}
+
+}
+/* FEATURES SECTION */
+
+.features-section,
+.steps-section{
+padding:100px 0;
+text-align:center;
+}
+
+.features-section h2,
+.steps-section h2{
+font-size:50px;
+color:white;
+margin-bottom:50px;
+}
+
+.feature-grid,
+.steps-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:25px;
+max-width:1300px;
+margin:auto;
+padding:0 20px;
+}
+
+.feature-card,
+.step-card{
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(10px);
+padding:40px 30px;
+border-radius:25px;
+color:white;
+transition:.3s;
+}
+
+.feature-card:hover,
+.step-card:hover{
+transform:translateY(-10px);
+}
+
+.icon{
+font-size:50px;
+margin-bottom:20px;
+}
+
+.feature-card h3,
+.step-card h3{
+font-size:28px;
+margin-bottom:15px;
+}
+
+.feature-card p,
+.step-card p{
+line-height:1.8;
+opacity:.9;
+}
+
+.step-number{
+width:80px;
+height:80px;
+background:#10b981;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+margin:auto auto 20px;
+font-size:32px;
+font-weight:700;
+color:white;
+}
+
+/* FOOTER */
+
+.custom-footer{
+padding:80px 20px;
+text-align:center;
+background:rgba(0,0,0,0.2);
+margin-top:50px;
+color:white;
+}
+
+.custom-footer h2{
+font-size:45px;
+margin-bottom:10px;
+}
+
+.custom-footer p{
+font-size:18px;
+opacity:.9;
+}
+
+.footer-tags{
+margin:30px 0;
+display:flex;
+justify-content:center;
+gap:15px;
+flex-wrap:wrap;
+}
+
+.footer-tags span{
+padding:12px 22px;
+background:rgba(255,255,255,0.1);
+border-radius:30px;
+}
+
+.copyright{
+margin-top:20px;
+font-size:15px;
+opacity:.8;
+}
+
+@media(max-width:900px){
+
+.feature-grid,
+.steps-grid{
+grid-template-columns:1fr;
+}
+
+.features-section h2,
+.steps-section h2{
+font-size:35px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<div class="left">
+
+<h1>🥗 AI Diet Recommendation</h1>
+
+<p>
+Get personalized nutrition guidance using Machine Learning.
+Analyze Age, BMI, Disease Type and Activity Level instantly.
+</p>
+
+<div class="stats">
+<div class="stat">🤖 AI Powered</div>
+<div class="stat">🥦 Healthy Living</div>
+<div class="stat">⚡ Instant Results</div>
+<div class="stat">📊 ML Based</div>
+</div>
+
+</div>
+
+<div class="right">
+
+{% if prediction %}
+
+<div class="result">
+
+<div class="result-header">
+<h1>🎉</h1>
+<h2>Recommended Diet</h2>
+</div>
+
+<div class="diet-box">
+{{ prediction.replace('_',' ') }}
+</div>
+
+<div class="info-card">
+
+<h3>📋 Diet Guidance</h3>
+
+
+{% if prediction == "Low_Sodium_Diet" %}
+
+<p>
+Reduce salt intake and focus on fresh vegetables, fruits, fish and low-sodium foods to maintain healthy blood pressure and heart health.
+</p>
+
+{% elif prediction == "High_Protein_Diet" %}
+
+<p>
+Increase protein-rich foods like eggs, chicken, fish and beans to support muscle growth, strength and recovery.
+</p>
+
+{% elif prediction == "Balanced_Diet" %}
+
+<p>
+Consume a healthy balance of proteins, carbohydrates and healthy fats to support overall wellness and energy.
+</p>
+
+{% elif prediction == "Diabetic_Diet" %}
+
+<p>
+Choose low-glycemic foods and avoid excess sugar to help maintain healthy blood glucose levels.
+</p>
+
+{% else %}
+
+<p>
+Follow a healthy balanced diet and maintain regular physical activity.
+</p>
+
+{% endif %}
+</div>
+<div class="food-grid">
+
+<div class="good">
+
+<h3>🍽 Recommended Foods</h3>
+
+<ul>
+
+{% if prediction == "Low_Sodium_Diet" %}
+<li>🥦 Broccoli</li>
+<li>🥒 Cucumber</li>
+<li>🍎 Apple</li>
+<li>🍚 Brown Rice</li>
+<li>🐟 Fish</li>
+
+{% elif prediction == "High_Protein_Diet" %}
+<li>🥚 Eggs</li>
+<li>🍗 Chicken Breast</li>
+<li>🐟 Fish</li>
+<li>🥛 Milk</li>
+<li>🫘 Beans</li>
+
+{% elif prediction == "Balanced_Diet" %}
+<li>🍎 Fruits</li>
+<li>🥗 Vegetables</li>
+<li>🍚 Whole Grains</li>
+<li>🥜 Nuts</li>
+<li>🥛 Dairy Products</li>
+
+{% elif prediction == "Diabetic_Diet" %}
+<li>🥬 Leafy Greens</li>
+<li>🥒 Cucumber</li>
+<li>🫘 Lentils</li>
+<li>🥜 Almonds</li>
+<li>🍞 Whole Wheat Bread</li>
+
+{% else %}
+<li>🥗 Healthy Foods</li>
+<li>🍎 Fruits</li>
+<li>🥦 Vegetables</li>
+{% endif %}
+
+</ul>
+
+</div>   <!-- GOOD DIV CLOSE -->
+
+<div class="bad">
+
+<h3>🚫 Foods To Avoid</h3>
+
+<ul>
+
+{% if prediction == "Low_Sodium_Diet" %}
+<li>🧂 Excess Salt</li>
+<li>🍟 Chips</li>
+<li>🍕 Pizza</li>
+<li>🥫 Processed Foods</li>
+<li>🌭 Sausages</li>
+
+{% elif prediction == "High_Protein_Diet" %}
+<li>🍬 Sugary Foods</li>
+<li>🥤 Soft Drinks</li>
+<li>🍰 Cakes</li>
+<li>🍫 Chocolates</li>
+<li>🍩 Donuts</li>
+
+{% elif prediction == "Balanced_Diet" %}
+<li>🍔 Fast Food</li>
+<li>🍟 Fried Foods</li>
+<li>🥤 Soft Drinks</li>
+<li>🍕 Excess Junk Food</li>
+<li>🍬 Excess Sugar</li>
+
+{% elif prediction == "Diabetic_Diet" %}
+<li>🍰 Cake</li>
+<li>🍫 Chocolate</li>
+<li>🍬 Sweets</li>
+<li>🥤 Sugary Drinks</li>
+<li>🍦 Ice Cream</li>
+
+{% else %}
+<li>🍔 Fast Food</li>
+<li>🍟 Fried Foods</li>
+<li>🥤 Soft Drinks</li>
+<li>🍕 Junk Food</li>
+<li>🍬 Excess Sugar</li>
+{% endif %}
+
+</ul>
+
+</div>   <!-- BAD DIV CLOSE -->
+
+</div>   <!-- FOOD GRID CLOSE -->
+
+
+<div class="extra">
+
+<div class="extra-box">
+<h3>💧 Water Intake</h3>
+<p>2.5 - 3 Litres Daily</p>
+</div>
+
+<div class="extra-box">
+<h3>🏃 Activity</h3>
+<p>30 Minutes Walking</p>
+</div>
+
+</div>
+
+<a href="/">
+<button class="new-btn">
+🔄 Get Another Recommendation
+</button>
+</a>
+
+</div>
+
+{% else %}
+
+<div class="form-title">
+AI Nutrition Assistant
+</div>
+
+<div class="form-sub">
+Fill your details to generate a personalized diet plan.
+</div>
+
+<form action="/predict" method="POST">
+
+<label>Age</label>
+<input type="number" name="age" required>
+
+<label>BMI</label>
+<input type="number" step="0.1" name="bmi" required>
+
+<label>Disease Type</label>
+<select name="disease">
+{% for d in diseases %}
+<option value="{{d}}">{{d}}</option>
+{% endfor %}
+</select>
+
+<label>Physical Activity Level</label>
+<select name="activity">
+{% for a in activities %}
+<option value="{{a}}">{{a}}</option>
+{% endfor %}
+</select>
+
+<button type="submit" class="btn">
+🚀 Generate Recommendation
+</button>
+
+</form>
+
+{% endif %}
+
+<div class="footer">
+🤖 AI Powered Personalized Diet Recommendation System
+</div>
+
+</div>
+
+</div>
+
+</div>
+<!-- WHY CHOOSE SECTION -->
+<section class="features-section">
+
+<h2>Why Choose AI Diet Recommendation System?</h2>
+
+<div class="feature-grid">
+
+<div class="feature-card">
+<div class="icon">🤖</div>
+<h3>Machine Learning Powered</h3>
+
+<p>
+Advanced Machine Learning algorithms analyze health data
+and generate personalized diet recommendations.
+</p>
+</div>
+
+<div class="feature-card">
+<div class="icon">⚡</div>
+<h3>Instant Diet Suggestions</h3>
+
+<p>
+Get accurate diet recommendations instantly based on Age,
+BMI, Disease Type and Activity Level.
+</p>
+</div>
+
+<div class="feature-card">
+<div class="icon">🥗</div>
+<h3>Instant Diet Suggestions</h3>
+
+<p>
+Get accurate diet recommendations instantly based on Age,
+BMI, Disease Type and Activity Level.
+</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- HOW IT WORKS -->
+<section class="steps-section">
+
+<h2>How It Works</h2>
+
+<div class="steps-grid">
+
+<div class="step-card">
+<div class="step-number">1</div>
+<h3>Enter Health Details</h3>
+
+<p>
+Provide Age, BMI, Disease Type and Physical Activity Level.
+</p>
+</div>
+
+<div class="step-card">
+<div class="step-number">2</div>
+<h3>ML Model Analysis</h3>
+
+<p>
+The trained Machine Learning model processes your health
+information and identifies suitable diet patterns.
+</p>
+</div>
+
+<div class="step-card">
+<div class="step-number">3</div>
+<h3>Receive Diet Plan</h3>
+
+<p>
+Get personalized diet recommendations, suggested foods
+and foods to avoid for better health.
+</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- FOOTER -->
+<footer class="custom-footer">
+
+<h2>🥗 AI Diet Recommendation System</h2>
+
+<p>
+Personalized Nutrition Guidance Using Machine Learning
+</p>
+
+<div class="footer-tags">
+<span>Machine Learning</span>
+<span>Nutrition</span>
+<span>Healthcare</span>
+<span>Healthy Lifestyle</span>
+</div>
+
+<p class="copyright">
+© 2026 AI Diet Recommendation System. All Rights Reserved.
+</p>
+
+</footer>
+</body>
+</html>
